@@ -1074,7 +1074,7 @@
 }
 .mdui-theme-accent-pink .mdui-color-theme-accent {
   color: #fff !important;
-  background-color: #ff4081 !important;
+  background-color: #87CEFA !important;
 }
 .mdui-theme-accent-pink .mdui-color-theme-a100 {
   color: rgba(0, 0, 0, .87) !important;
@@ -1082,7 +1082,7 @@
 }
 .mdui-theme-accent-pink .mdui-color-theme-a200 {
   color: #fff !important;
-  background-color: #ff4081 !important;
+  background-color: #87CEFA !important;
 }
 .mdui-theme-accent-pink .mdui-color-theme-a400 {
   color: #fff !important;
@@ -2238,7 +2238,7 @@
 }
 .mdui-color-pink-accent {
   color: #fff !important;
-  background-color: #ff4081 !important;
+  background-color: #87CEFA !important;
 }
 .mdui-color-pink-a100 {
   color: rgba(0, 0, 0, .87) !important;
@@ -2246,7 +2246,7 @@
 }
 .mdui-color-pink-a200 {
   color: #fff !important;
-  background-color: #ff4081 !important;
+  background-color: #87CEFA !important;
 }
 .mdui-color-pink-a400 {
   color: #fff !important;
@@ -3153,13 +3153,13 @@
   color: #ff6d00 !important;
 }
 .mdui-theme-accent-pink .mdui-text-color-theme-accent {
-  color: #ff4081 !important;
+  color: #87CEFA !important;
 }
 .mdui-theme-accent-pink .mdui-text-color-theme-a100 {
   color: #ff80ab !important;
 }
 .mdui-theme-accent-pink .mdui-text-color-theme-a200 {
-  color: #ff4081 !important;
+  color: #87CEFA !important;
 }
 .mdui-theme-accent-pink .mdui-text-color-theme-a400 {
   color: #f50057 !important;
@@ -4028,13 +4028,13 @@
   color: #ff6d00 !important;
 }
 .mdui-text-color-pink-accent {
-  color: #ff4081 !important;
+  color: #87CEFA !important;
 }
 .mdui-text-color-pink-a100 {
   color: #ff80ab !important;
 }
 .mdui-text-color-pink-a200 {
-  color: #ff4081 !important;
+  color: #87CEFA !important;
 }
 .mdui-text-color-pink-a400 {
   color: #f50057 !important;
@@ -5366,7 +5366,7 @@ body.mdui-locked {
   position: relative;
   display: inline-block;
   overflow: hidden;
-  color: #ff4081;
+  color: #87CEFA;
   text-decoration: none;
   vertical-align: top;
   outline: none;
@@ -5379,7 +5379,7 @@ body.mdui-locked {
   width: 100%;
   height: 1px;
   content: ' ';
-  background-color: #ff4081;
+  background-color: #87CEFA;
   -webkit-transition: all .2s;
           transition: all .2s;
   -webkit-transform: scaleX(0);
@@ -5599,10 +5599,10 @@ body.mdui-locked {
   background-color: #ffab40;
 }
 .mdui-theme-accent-pink .mdui-typo a {
-  color: #ff4081;
+  color: #87CEFA;
 }
 .mdui-theme-accent-pink .mdui-typo a:before {
-  background-color: #ff4081;
+  background-color: #87CEFA;
 }
 .mdui-theme-accent-purple .mdui-typo a {
   color: #e040fb;
@@ -6371,12 +6371,12 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
 }
 .mdui-theme-layout-dark .mdui-textfield-focus .mdui-textfield-input,
 .mdui-theme-layout-dark .mdui-textfield-focus .mdui-textfield-input:hover {
-  border-bottom-color: #ff4081;
-  -webkit-box-shadow: 0 1px 0 0 #ff4081;
-          box-shadow: 0 1px 0 0 #ff4081;
+  border-bottom-color: #87CEFA;
+  -webkit-box-shadow: 0 1px 0 0 #87CEFA;
+          box-shadow: 0 1px 0 0 #87CEFA;
 }
 .mdui-theme-layout-dark .mdui-textfield-focus .mdui-textfield-label {
-  color: #ff4081;
+  color: #87CEFA;
 }
 .mdui-theme-layout-dark .mdui-textfield-disabled .mdui-textfield-label,
 .mdui-theme-layout-dark .mdui-textfield-disabled .mdui-textfield-input::-webkit-input-placeholder {
@@ -6624,14 +6624,14 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
   color: rgba(197, 17, 98, .87);
 }
 .mdui-theme-accent-pink.mdui-theme-layout-dark .mdui-textfield-focus .mdui-textfield-input {
-  border-bottom-color: #ff4081;
-  -webkit-box-shadow: 0 1px 0 0 #ff4081;
-          box-shadow: 0 1px 0 0 #ff4081;
+  border-bottom-color: #87CEFA;
+  -webkit-box-shadow: 0 1px 0 0 #87CEFA;
+          box-shadow: 0 1px 0 0 #87CEFA;
 }
 .mdui-theme-accent-pink.mdui-theme-layout-dark .mdui-textfield-focus .mdui-textfield-label,
 .mdui-theme-accent-pink.mdui-theme-layout-dark .mdui-textfield-focus .mdui-textfield-floating-label.mdui-textfield-focus .mdui-textfield-label,
 .mdui-theme-accent-pink.mdui-theme-layout-dark .mdui-textfield-focus .mdui-icon {
-  color: #ff4081;
+  color: #87CEFA;
 }
 .mdui-theme-accent-purple .mdui-textfield-focus .mdui-textfield-input {
   border-bottom-color: #a0f;
@@ -6791,8 +6791,8 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
 }
 /* 各种状态的图标 */
 .mdui-checkbox input[type="checkbox"]:checked + .mdui-checkbox-icon:after {
-  background-color: #ff4081;
-  border-color: #ff4081;
+  background-color: #87CEFA;
+  border-color: #87CEFA;
 }
 .mdui-checkbox input[type="checkbox"]:checked + .mdui-checkbox-icon:before {
   opacity: 1;
@@ -6800,8 +6800,8 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
           transform: rotateZ(37deg) scale(1);
 }
 .mdui-checkbox input[type="checkbox"]:indeterminate + .mdui-checkbox-icon:after {
-  background-color: #ff4081;
-  border-color: #ff4081;
+  background-color: #87CEFA;
+  border-color: #87CEFA;
 }
 .mdui-checkbox input[type="checkbox"]:indeterminate + .mdui-checkbox-icon:before {
   top: 8px;
@@ -6975,8 +6975,8 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
 }
 .mdui-theme-accent-pink .mdui-checkbox input[type="checkbox"]:checked + .mdui-checkbox-icon:after,
 .mdui-theme-accent-pink .mdui-checkbox input[type="checkbox"]:indeterminate + .mdui-checkbox-icon:after {
-  background-color: #ff4081;
-  border-color: #ff4081;
+  background-color: #87CEFA;
+  border-color: #87CEFA;
 }
 .mdui-theme-accent-pink .mdui-checkbox:active input[type="checkbox"]:not(:disabled):checked + .mdui-checkbox-icon,
 .mdui-theme-accent-pink .mdui-checkbox input[type="checkbox"]:focus:not(:disabled):checked + .mdui-checkbox-icon,
@@ -7107,7 +7107,7 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
   width: 14px;
   height: 14px;
   content: ' ';
-  background-color: #ff4081;
+  background-color: #87CEFA;
   border-radius: 14px;
   opacity: 0;
   -webkit-transition: all .3s cubic-bezier(.4, 0, .2, 1);
@@ -7117,7 +7117,7 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
 }
 /* 选中状态的图标 */
 .mdui-radio input[type="radio"]:checked + .mdui-radio-icon {
-  border-color: #ff4081;
+  border-color: #87CEFA;
 }
 .mdui-radio input[type="radio"]:checked + .mdui-radio-icon:before {
   opacity: 1;
@@ -7271,10 +7271,10 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
           box-shadow: 0 0 0 15px rgba(255, 171, 64, .16);
 }
 .mdui-theme-accent-pink .mdui-radio input[type="radio"]:checked + .mdui-radio-icon {
-  border-color: #ff4081;
+  border-color: #87CEFA;
 }
 .mdui-theme-accent-pink .mdui-radio input[type="radio"]:checked + .mdui-radio-icon:before {
-  background-color: #ff4081;
+  background-color: #87CEFA;
 }
 .mdui-theme-accent-pink .mdui-radio:active input[type="radio"]:checked:not(:disabled) + .mdui-radio-icon,
 .mdui-theme-accent-pink .mdui-radio input[type="radio"]:focus:checked:not(:disabled) + .mdui-radio-icon {
@@ -7401,7 +7401,7 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
 }
 .mdui-switch input[type="checkbox"]:checked + .mdui-switch-icon:before {
   left: 20px;
-  background-color: #ff4081;
+  background-color: #87CEFA;
 }
 /* 未选中时或禁用时 按下的阴影 */
 .mdui-switch:active input[type="checkbox"] + .mdui-switch-icon:before,
@@ -7552,7 +7552,7 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
   background-color: rgba(255, 64, 129, .5);
 }
 .mdui-theme-accent-pink .mdui-switch input[type="checkbox"]:checked + .mdui-switch-icon:before {
-  background-color: #ff4081;
+  background-color: #87CEFA;
 }
 .mdui-theme-accent-pink .mdui-switch:active input[type="checkbox"]:checked:not(:disabled) + .mdui-switch-icon:before,
 .mdui-theme-accent-pink .mdui-switch input[type="checkbox"]:focus:checked:not(:disabled) + .mdui-switch-icon:before {
@@ -7776,7 +7776,7 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
   left: 0;
 }
 .mdui-slider-fill:before {
-  background-color: #ff4081;
+  background-color: #87CEFA;
 }
 /* 滑块 */
 .mdui-slider-thumb {
@@ -7787,8 +7787,8 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   margin-top: -6px;
-  background-color: #ff4081;
-  border: 2px solid #ff4081;
+  background-color: #87CEFA;
+  border: 2px solid #87CEFA;
   border-radius: 50%;
   -webkit-transition: background .45s cubic-bezier(.4, 0, .2, 1), border-color .45s cubic-bezier(.4, 0, .2, 1), border-radius .2s cubic-bezier(.4, 0, .2, 1), -webkit-transform .2s cubic-bezier(.4, 0, .2, 1);
           transition: background .45s cubic-bezier(.4, 0, .2, 1), border-color .45s cubic-bezier(.4, 0, .2, 1), border-radius .2s cubic-bezier(.4, 0, .2, 1), -webkit-transform .2s cubic-bezier(.4, 0, .2, 1);
@@ -7882,11 +7882,11 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
   border: 2px solid #ffab40;
 }
 .mdui-theme-accent-pink .mdui-slider-fill:before {
-  background-color: #ff4081;
+  background-color: #87CEFA;
 }
 .mdui-theme-accent-pink .mdui-slider-thumb {
-  background-color: #ff4081;
-  border: 2px solid #ff4081;
+  background-color: #87CEFA;
+  border: 2px solid #87CEFA;
 }
 .mdui-theme-accent-purple .mdui-slider-fill:before {
   background-color: #e040fb;
@@ -8635,7 +8635,7 @@ input.mdui-btn[type="submit"] {
   background-color: inherit !important;
 }
 .mdui-select-menu-item[selected] {
-  color: #ff4081;
+  color: #87CEFA;
 }
 /* 原生 select 组件 */
 select.mdui-select {
