@@ -630,7 +630,7 @@
 }
 .mdui-theme-primary-pink .mdui-color-theme {
   color: #fff !important;
-  background-color: #e91e63 !important;
+  background-color: #e65100 !important;
 }
 .mdui-theme-primary-pink .mdui-color-theme-50 {
   color: rgba(0, 0, 0, .87) !important;
@@ -654,7 +654,7 @@
 }
 .mdui-theme-primary-pink .mdui-color-theme-500 {
   color: #fff !important;
-  background-color: #e91e63 !important;
+  background-color: #e65100 !important;
 }
 .mdui-theme-primary-pink .mdui-color-theme-600 {
   color: #fff !important;
@@ -1794,7 +1794,7 @@
 }
 .mdui-color-pink {
   color: #fff !important;
-  background-color: #e91e63 !important;
+  background-color: #000000D1 !important;
 }
 .mdui-color-pink-50 {
   color: rgba(0, 0, 0, .87) !important;
@@ -1818,7 +1818,7 @@
 }
 .mdui-color-pink-500 {
   color: #fff !important;
-  background-color: #e91e63 !important;
+  background-color: #e65100 !important;
 }
 .mdui-color-pink-600 {
   color: #fff !important;
@@ -2819,7 +2819,7 @@
   color: #e65100 !important;
 }
 .mdui-theme-primary-pink .mdui-text-color-theme {
-  color: #e91e63 !important;
+  color: #e65100 !important;
 }
 .mdui-theme-primary-pink .mdui-text-color-theme-50 {
   color: #fce4ec !important;
@@ -2837,7 +2837,7 @@
   color: #ec407a !important;
 }
 .mdui-theme-primary-pink .mdui-text-color-theme-500 {
-  color: #e91e63 !important;
+  color: #e65100 !important;
 }
 .mdui-theme-primary-pink .mdui-text-color-theme-600 {
   color: #d81b60 !important;
@@ -3694,7 +3694,7 @@
   color: #e65100 !important;
 }
 .mdui-text-color-pink {
-  color: #e91e63 !important;
+  color: #e65100 !important;
 }
 .mdui-text-color-pink-50 {
   color: #fce4ec !important;
@@ -3712,7 +3712,7 @@
   color: #ec407a !important;
 }
 .mdui-text-color-pink-500 {
-  color: #e91e63 !important;
+  color: #e65100 !important;
 }
 .mdui-text-color-pink-600 {
   color: #d81b60 !important;
@@ -6236,7 +6236,7 @@ th.mdui-table-cell-checkbox .mdui-checkbox {
           transform: scale(.75) translateY(0);
 }
 .mdui-textfield-floating-label.mdui-textfield-focus .mdui-textfield-label {
-  color: #e91e63;
+  color: #e65100;
 }
 /* 可展开文本框，默认向右展开
    ========== */
@@ -8729,7 +8729,7 @@ select.mdui-select[multiple] option:last-child {
   color: #ff9800;
 }
 .mdui-theme-accent-pink .mdui-select-menu-item[selected] {
-  color: #e91e63;
+  color: #e65100;
 }
 .mdui-theme-accent-purple .mdui-select-menu-item[selected] {
   color: #9c27b0;
@@ -10197,10 +10197,10 @@ select.mdui-select[multiple] option:last-child {
   background-color: #ff9800;
 }
 .mdui-theme-primary-pink .mdui-tab .mdui-tab-active {
-  color: #e91e63;
+  color: #e65100;
 }
 .mdui-theme-primary-pink .mdui-tab-indicator {
-  background-color: #e91e63;
+  background-color: #e65100;
 }
 .mdui-theme-primary-purple .mdui-tab .mdui-tab-active {
   color: #9c27b0;
@@ -10964,7 +10964,7 @@ body.mdui-loaded .mdui-drawer {
 .mdui-dialog-actions .mdui-btn {
   min-width: 64px;
   margin-left: 8px;
-  color: #e91e63;
+  color: #e65100;
 }
 .mdui-dialog-actions .mdui-btn:first-child {
   margin-left: 0;
@@ -11025,7 +11025,7 @@ body.mdui-loaded .mdui-drawer {
   color: #ff9800;
 }
 .mdui-theme-accent-pink .mdui-dialog-actions .mdui-btn {
-  color: #e91e63;
+  color: #e65100;
 }
 .mdui-theme-accent-purple .mdui-dialog-actions .mdui-btn {
   color: #9c27b0;
@@ -11704,7 +11704,7 @@ body.mdui-loaded .mdui-drawer {
   color: #ff9800;
 }
 .mdui-theme-primary-pink .mdui-bottom-nav a.mdui-bottom-nav-active {
-  color: #e91e63;
+  color: #e65100;
 }
 .mdui-theme-primary-purple .mdui-bottom-nav a.mdui-bottom-nav-active {
   color: #9c27b0;
@@ -11947,7 +11947,7 @@ body.mdui-loaded .mdui-drawer {
 }
 .mdui-theme-primary-pink .mdui-progress-determinate,
 .mdui-theme-primary-pink .mdui-progress-indeterminate {
-  background-color: #e91e63;
+  background-color: #e65100;
 }
 .mdui-theme-primary-purple .mdui-progress {
   background-color: rgba(156, 39, 176, .2);
@@ -12408,7 +12408,7 @@ body.mdui-loaded .mdui-drawer {
   border-color: #ff9800;
 }
 .mdui-theme-primary-pink .mdui-spinner-layer {
-  border-color: #e91e63;
+  border-color: #e65100;
 }
 .mdui-theme-primary-purple .mdui-spinner-layer {
   border-color: #9c27b0;
