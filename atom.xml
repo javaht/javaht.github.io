@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>http://javaht.github.io</id>
     <title>周记</title>
-    <updated>2022-05-04T15:10:13.442Z</updated>
+    <updated>2022-05-04T15:21:32.807Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="http://javaht.github.io"/>
     <link rel="self" href="http://javaht.github.io/atom.xml"/>
@@ -94,6 +94,25 @@ Math.min(defaultMaxSplitBytes,Math.max(openCostInbytes,bytesPerCore))</p>
 <p>RDD的并行度：一个job一次所能执行的task数目，<strong>spark.default.parallelism</strong><br>
 SparkSql的并行度：默认是200 只能控制Spark sql、DataFrame、DataSet 分区个数，不能控制 RDD 分区个数  <em><strong>spark.sql.shuffle.partitions</strong></em></p>
 <h6 id="二-动态分区插入数据">二、动态分区插入数据</h6>
+<p>1.没有 Shuffle 的情况下。最差的情况下，每个 Task 中都有表各个分区的记录，那文件数最终文件数将达到 Task 数量 * 表分区数。这种情况下是极易产生小文件的。<br>
+INSERT overwrite table A partition ( aa )<br>
+SELECT * FROM B;</p>
+<p>2.有 Shuffle 的情况下，上面的 Task 数量 就变成了 spark.sql.shuffle.partitions（默认值200）。那么最差情况就会有 spark.sql.shuffle.partitions * 表分区数。当 spark.sql.shuffle.partitions 设 置 过 大 时 ， 小 文 件 问 题 就 产 生 了 ； 当<br>
+spark.sql.shuffle.partitions 设置过小时，任务的并行度就下降了，性能随之受到影响。最理想的情况是根据分区字段进行 shuffle，在上面的 sql 中加上 distribute by aa。把同一分区的记录都哈希到同一个分区中去，由一个 Spark 的 Task 进行写入，这样的话只会产生 N 个文件, 但是这种情况下也容易出现数据倾斜的问题。</p>
+<p>解决思路：<br>
+结合第 4 章解决倾斜的思路，在确定哪个分区键倾斜的情况下，将倾斜的分区键单独<br>
+拎出来：<br>
+将入库的 SQL 拆成（where 分区 != 倾斜分区键 ）和 （where 分区 = 倾斜分区键） 几<br>
+个部分，非倾斜分区键的部分正常 distribute by 分区字段，倾斜分区键的部分 distribute by<br>
+随机数，sql 如下：</p>
+<p>//1.非倾斜键部分<br>
+INSERT overwrite table A partition ( aa )<br>
+SELECT *  FROM B where aa != 大 key<br>
+distribute by aa;</p>
+<p>//2.倾斜键部分<br>
+INSERT overwrite table A partition ( aa )<br>
+SELECT * FROM B where aa = 大 key<br>
+distribute by cast(rand() * 5 as int);</p>
 ]]></content>
     </entry>
 </feed>
