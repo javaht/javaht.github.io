@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>http://javaht.github.io</id>
     <title>周记</title>
-    <updated>2022-05-04T15:21:32.807Z</updated>
+    <updated>2022-05-05T14:20:37.787Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="http://javaht.github.io"/>
     <link rel="self" href="http://javaht.github.io/atom.xml"/>
@@ -113,6 +113,37 @@ distribute by aa;</p>
 INSERT overwrite table A partition ( aa )<br>
 SELECT * FROM B where aa = 大 key<br>
 distribute by cast(rand() * 5 as int);</p>
+<h5 id="543-增大-reduce-缓冲区减少拉取次数">5.4.3  增大 reduce 缓冲区，减少拉取次数</h5>
+<p>Spark Shuffle 过程中，shuffle reduce task 的 buffer 缓冲区大小决定了 reduce task 每次能够缓冲的数据量，也就是每次能够拉取的数据量，如果内存资源较为充足，适当增加拉取数据缓冲区的大小，可以减少拉取数据的次数，也就可以减少网络传输的次数，进而提升性能。<br>
+reduce 端数据拉取缓冲区的大小可以通过 <strong>spark.reducer.maxSizeInFlight</strong> 参数进行设置，默认为 <strong>48MB</strong></p>
+<h5 id="544-调节-reduce-端拉取数据重试次数">5.4.4 调节 reduce 端拉取数据重试次数</h5>
+<p>reduce 端拉取数据重试次数可以通过 <strong>spark.shuffle.io.maxRetries</strong> 参数进行设置，该参数就代表了可以重试的最大次数。如果在指定次数之内拉取还是没有成功，就可能会导致作业执行失败，<strong>默认为 3</strong></p>
+<h5 id="545-调节-reduce-端拉取数据等待间隔">5.4.5 调节 reduce 端拉取数据等待间隔</h5>
+<p>reduce 端拉取数据等待间隔可以通过 <strong>spark.shuffle.io.retryWait</strong> 参数进行设置，<strong>默认值为 5s</strong></p>
+<h4 id="55-合理利用-bypass">5.5 合理利用 bypass</h4>
+<pre><code> .set(&quot;spark.shuffle.sort.bypassMergeThreshold&quot;, &quot;30&quot;) //bypass阈值，默认200,改成30对比效果
+</code></pre>
+<h3 id="6整体优化">6.整体优化</h3>
+<h4 id="61调节数据本地化等待时长">6.1调节数据本地化等待时长</h4>
+<p>在 Spark 项目开发阶段，可以使用 client 模式对程序进行测试，此时，可以在本地看到比较全的日志信息，日志信息中有明确的 Task 数据本地化的级别，如果大部分都是<strong>PROCESS_LOCAL(本地)、NODE_LOCAL(节点)</strong>，那么就无需进行调节，但是如果发现很多的级别都是 <strong>RACK_LOCAL(机架)、ANY(不同机架)</strong>，那么需要对本地化的等待时长进行调节，</p>
+<pre><code>spark.locality.wait          //建议 6s、10s
+spark.locality.wait.process  //建议 60s
+spark.locality.wait.node     //建议 30s
+spark.locality.wait.rack     //建议 20s
+</code></pre>
+<h4 id="62-使用堆外内存">6.2 使用堆外内存</h4>
+<p><strong>spark.executor.memory</strong>：提交任务时指定的堆内内存。</p>
+<p>**spark.executor.memoryOverhead：**堆外内存参数(内存额外开销)。默认开启，默认值为 spark.executor.memory*0.1 并且会与最小值 384mb 做对比，取最大值。</p>
+<p>所以 spark on yarn 任务堆内内存申请 1 个 g，而实际去 yarn 申请的内存大于 1 个 g 的原因。</p>
+<p><strong>spark.memory.offHeap.size</strong> ： 堆 外 内 存 参 数 ， spark 中 默 认 关 闭 ， 需 要 将spark.memory.enable.offheap.enable 参数设置为 true。</p>
+<p>不同版本不同：</p>
+<pre><code>spark2.4.5    executor.memory+executor.memoryOverhead+pySparkWorkerMemory
+spark3.0.0    executor.memory+memory.offHeap.size(堆外内存)+executor.memoryOverhead(内存开销  默认堆内内存*0.1)+pySparkWorkerMemory
+</code></pre>
+<h5 id="621使用堆外缓存">6.2.1使用堆外缓存</h5>
+<pre><code>// TODO 指定持久化到 堆外内存
+result.persist(StorageLevel.OFF_HEAP)
+</code></pre>
 ]]></content>
     </entry>
 </feed>
