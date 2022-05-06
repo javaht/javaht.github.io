@@ -183,6 +183,78 @@ spark3.0.0    executor.memory+memory.offHeap.size(堆外内存)+executor.memoryO
 <pre><code>// TODO 指定持久化到 堆外内存
 result.persist(StorageLevel.OFF_HEAP)
 </code></pre>
+<h4 id="63-调节连接等待时长">6.3 调节连接等待时长</h4>
+<p>​       在 Spark 作业运行过程中，Executor 优先从自己本地关联的 BlockManager 中获取某份数据，如果本地 BlockManager 没有的话，会通过 TransferService 远程连接其他节点上Executor 的 BlockManager 来获取数据。<br>
+​      如果 task 在运行过程中创建大量对象或者创建的对象较大，会占用大量的内存，这回导致频繁的垃圾回收，但是垃圾回收会导致工作现场全部停止，也就是说，垃圾回收一旦执行，Spark 的 Executor 进程就会停止工作，无法提供相应，此时，由于没有响应，无法建立网络连接，会导致网络连接超时。<br>
+​     在生产环境下，有时会遇到 file not found、file lost 这类错误，在这种情况下，很有可能是 Executor 的 BlockManager 在拉取数据的时候，无法建立连接，然后超过默认的连接等待时长 120s 后，宣告数据拉取失败，如果反复尝试都拉取不到数据，可能会导致 Spark 作业的崩溃。这种情况也可能会导致 DAGScheduler 反复提交几次 stage，TaskScheduler 反复提交几次 task，大大延长了我们的 Spark 作业的运行时间。为了避免长时间暂停(如 GC)导致的超时，可以考虑调节连接的超时时长，连接等待时长需要在 spark-submit 脚本中进行设置，设置方式可以在提交时指定：</p>
+<p>--conf spark.core.connection.ack.wait.timeout=300s</p>
+<h3 id="7-spark-aqe">7. spark AQE</h3>
+<p>Spark 在 3.0 版本推出了 AQE（Adaptive Query Execution），即自适应查询执行。<strong>AQE 是Spark SQL 的一种动态优化机制</strong>，在运行时，每当 Shuffle Map 阶段执行完毕，AQE 都会结 合这个阶段的统计信息，基于既定的规则动态地调整、修正尚未执行的逻辑计划和物理计划，来完成对原始查询语句的运行时优化。</p>
+<h4 id="71-动态合并分区">7.1 动态合并分区</h4>
+<pre><code>.set(&quot;spark.sql.adaptive.enabled&quot;, &quot;true&quot;) //AQE的总开关
+.set(&quot;spark.sql.adaptive.coalescePartitions.enabled&quot;, &quot;true&quot;) // 合并分区的开关
+.set(&quot;spark.sql.adaptive.coalescePartitions.initialPartitionNum&quot;,&quot;1000&quot;) // 初始的并行度
+.set(&quot;spark.sql.adaptive.coalescePartitions.minPartitionNum&quot;,&quot;10&quot;) // 合并后的最小分区数
+.set(&quot;spark.sql.adaptive.advisoryPartitionSizeInBytes&quot;, &quot;20mb&quot;) // 合并后的分区，期望有多大
+
+.set(&quot;spark.dynamicAllocation.enabled&quot;,&quot;true&quot;)  // 动态申请资源  默认false   这样就能申请更多的excutor 并发度得到提升
+//.set(&quot;spark.dynamicAllocation.shuffleTracking.enabled&quot;,&quot;true&quot;) // shuffle动态跟踪
+</code></pre>
+<h4 id="72动态切换join策略">7.2动态切换Join策略</h4>
+<p>比如有A表和B表 A表4.2G   B表2个G  筛选条件后B表为10M  如果没有动态切换join策略开关 就走普通的sortshuffle</p>
+<p>如果开启后 就走广播了</p>
+<pre><code>.set(&quot;spark.sql.adaptive.enabled&quot;, &quot;true&quot;)  //AQE的总开关
+.set(&quot;spark.sql.adaptive.localShuffleReader.enabled&quot;, &quot;true&quot;) //在不需要进行shuffle重分区时，尝试使用本地shuffle读取器。将sort-meger join 转换为广播join
+</code></pre>
+<h4 id="73-动态优化join倾斜">7.3 动态优化Join倾斜</h4>
+<pre><code>1）spark.sql.adaptive.skewJoin.enabled :是否开启倾斜 join 检测，如果开启了，那么会将倾斜的分区数据拆成多个分区,默认是开启的，但是得打开 aqe。 
+
+2）spark.sql.adaptive.skewJoin.skewedPartitionFactor :默认值 5，此参数用来判断分区数 据量是否数据倾斜，当任务中最大数据量分区对应的数据量大于的分区中位数乘以此参数，并且也大于 spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes 参数，那么此任务是数据倾斜。
+
+3）spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes :默认值 256mb，用于判断是否数据倾斜
+4）spark.sql.adaptive.advisoryPartitionSizeInBytes :此参数用来告诉 spark 进行拆分后推荐分区大小是多少
+
+.set(&quot;spark.sql.adaptive.enabled&quot;, &quot;true&quot;)// 开启AQE的总开关
+
+判断条件：
+条件1：skewedPartitionFactor(默认是5) * 当前分区大小&gt; 所有分区大小的中值（比如有200个分区 这里指的是第100个分区的大小）
+条件2：skewedPartitionFactor(默认是5) * 当前分区大小&gt; skewedPartitionThresholdInBytes
+当条件1和条件2都满足时，认为当前分区是倾斜的。
+
+需要注意的是和合并分区(spark.sql.adaptive.coalescePartitions.enabled)有冲突会影响对分区大小的判断  
+如果同时开启会先合并分区
+</code></pre>
+<h3 id="8dpp动态裁剪-谓词下推的根">8.DPP(动态裁剪 谓词下推的根)</h3>
+<p>Spark3.0 支持动态分区裁剪 Dynamic Partition Pruning，简称 DPP，核心思路就是先将join 一侧作为子查询计算出来，再将其所有分区用到 join 另一侧作为表过滤条件，从而实现对分区的动态修剪。如下图所示:</p>
+<figure data-type="image" tabindex="2"><img src="https://s2.loli.net/2022/05/06/IkZGaD38VHKUJME.png" alt="image-20220506195226809" loading="lazy"></figure>
+<pre><code>将 select t1.id,t2.pkey from t1 join t2 on t1.pkey =t2.pkey and t2.id&lt;2 优化成了
+select t1.id,t2.pkey from t1 join t2 on t1.pkey=t2.pkey and t1.pkey in(select t2.pkey from t2 where t2.id&lt;2)
+
+触发条件：
+（1）待裁剪的表 join 的时候，join 条件里必须有分区字段
+（2）如果是需要修剪左表，那么 join 必须是 inner join ,left semi join 或 right join,反之亦然。但如果是 left out join,无论右边有没有这个分区，左边的值都存在，就不需要被裁剪
+（3）另一张表需要存在至少一个过滤条件，比如 a join b on a.key=b.key and a.id&lt;2
+参数 spark.sql.optimizer.dynamicPartitionPruning.enabled 默认开启。
+</code></pre>
+<h3 id="9-hint增强">9 .Hint增强</h3>
+<h4 id="91-broadcasthast-join">9.1 broadcasthast join</h4>
+<pre><code>sparkSession.sql(&quot;select /*+ BROADCAST(school) */ * from test_student student left join test_school school on student.id=school.id&quot;).show()
+
+sparkSession.sql(&quot;select /*+ BROADCASTJOIN(school) */ * from  test_student student left join test_school school on student.id=school.id&quot;).show()
+
+sparkSession.sql(&quot;select /*+ MAPJOIN(school) */ * from test_student student left join test_school school on student.id=school.id&quot;).show()
+</code></pre>
+<h4 id="92-sort-merge-join">9.2  sort merge join</h4>
+<pre><code>sparkSession.sql(&quot;select /*+ SHUFFLE_MERGE(school) */ * from test_student student left join test_school school on 
+student.id=school.id&quot;).show()
+
+sparkSession.sql(&quot;select /*+ MERGEJOIN(school) */ * from test_student student left join test_school school on student.id=school.id&quot;).show()
+
+sparkSession.sql(&quot;select /*+ MERGE(school) */ * from test_student student left join test_school school on student.id=school.id&quot;).show()
+</code></pre>
+<h4 id="93-shuffle_hash-join">9.3 shuffle_hash join</h4>
+<pre><code>sparkSession.sql(&quot;select /*+ SHUFFLE_HASH(school) */ * from test_student student left join test_school school on student.id=school.id&quot;).show()
+</code></pre>
 
                 </div>
             </article>
