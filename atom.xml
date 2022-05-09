@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>http://javaht.github.io</id>
     <title>周记</title>
-    <updated>2022-05-08T10:54:26.456Z</updated>
+    <updated>2022-05-09T13:25:40.532Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="http://javaht.github.io"/>
     <link rel="self" href="http://javaht.github.io/atom.xml"/>
@@ -10,6 +10,69 @@
     <logo>http://javaht.github.io/images/avatar.png</logo>
     <icon>http://javaht.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 周记</rights>
+    <entry>
+        <title type="html"><![CDATA[Spark内存]]></title>
+        <id>http://javaht.github.io/post/spark_memory/</id>
+        <link href="http://javaht.github.io/post/spark_memory/">
+        </link>
+        <updated>2022-05-09T13:20:15.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="spark堆内内存如下">Spark堆内内存如下：</h3>
+<figure data-type="image" tabindex="1"><img src="https://s2.loli.net/2022/05/09/dNsBUkwRlJZq4SX.png" alt="image-20220509204810466" loading="lazy"></figure>
+<ul>
+<li>**Storage 内存：**主要用于存储 Spark 的 cache 数据，例如 RDD 的 cache，Broadcast 变量，Unroll 数据等。需要主要的是，unrolled 的数据如果内存不够，会存储在 driver 端。</li>
+<li>**Execution 内存：**用于存储 Spark task 执行过程中需要的对象，如 Shuffle、Join、Sort、Aggregation等计算过程中的临时数据。</li>
+<li>**User 内存：**分配 Spark Memor</li>
+</ul>
+<p>y 剩余的内存，用户可以根据需要使用，可以存储 RDD transformations 需要的数据结构。</p>
+<ul>
+<li>**Reserved 内存：**这部分内存是预留给系统用的，固定不变。</li>
+</ul>
+<h3 id="spark堆外内存">Spark堆外内存</h3>
+<p>在默认情况下堆外内存并不启用，可通过配置 spark.memory.offHeap.enabled 参数启用，并由spark.memory.offHeap.size 参数设定堆外空间的大小。除了没有 other 空间，堆外内存与堆内内存的划分方式相同如下图所示(以统一内存管理机制为例)，所有运行中的并发任务共享存储内存和执行内存。</p>
+<figure data-type="image" tabindex="2"><img src="https://s2.loli.net/2022/05/09/35nqSajuvAcfQXs.png" alt="image-20220509211927238" loading="lazy"></figure>
+<h3 id="spark的统一内存管理">Spark的统一内存管理</h3>
+<p>Spark 1.6 之后引入的统一内存管理机制，存储内存（Storeage Memory）和执行内存（Execution Memory）可以动态占用对方的空闲区域（如下图），在设定基本的的存储内存和执行内存区域（由 spark.storage.memoryFraction 参数控制）后，便确定了双方各自拥有的空间容量。统一内存管理的核心在内存区域的动态占用机制，其占用规则如下：</p>
+<ul>
+<li>双方空间都不足时，则存储到硬盘；如己方空间不足而对方空余时，可借用对方的空间；（存储空间不足是指不足以放下一个完整的 Block）。</li>
+<li>执行内存的空间被对方占用后，可让对方将占用的部分存储转存到硬盘，然后“归还”借用的空间。</li>
+<li>存储内存的空间被对方占用后，无法让对方“归还”，因为需要考虑到 Shuffle 过程中很多因素，实现起来较为复杂。</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://s2.loli.net/2022/05/09/xpCdEDFy5ohV1e3.png" alt="image006" loading="lazy"></figure>
+<h3 id="spark-内存参数">Spark 内存参数</h3>
+<pre><code>参数：spark.memory.fraction
+含义：用于执行和存储的部分（堆空间-300MB）。值越低，溢出和缓存数据逐出的频率就越高。此配置的目的是为稀疏的，异常大的记录留出用于内部元数据，用户数据结构和大小估计不精确的内存。建议将其保留为默认值。
+默认值：0.6 (Spark 1.6 默认为 0.75，Spark 2.0+ 默认为 0.6)
+
+参数：spark.memory.storageFraction
+含义：可以逐出的存储内存量，以spark.memory.fraction预留的区域大小的一部分表示。数值越高，则可用于执行的工作内存就越少，任务可能会更频繁地溢出到磁盘上. 建议将其保留为默认值。
+默认值：0.5
+
+参数：spark.memory.offHeap.enabled
+含义：如果为true，Spark将尝试将堆外内存用于某些操作。如果启用了堆外内存使用，则spark.memory.offHeap.size必须为正。
+默认值：false
+
+参数：spark.memory.offHeap.size
+含义：可用于堆外分配的绝对内存量（以字节为单位）。此设置对堆内存使用没有影响，因此，如果执行者的总内存消耗必须在某个硬限制内，那么请确保相应地缩小JVM堆大小。当spark.memory.offHeap.enabled=true时，必须将此值设置为正值.
+默认值：0
+
+参数：spark.memory.useLegacyMode 
+含义：是否启用Spark 1.5及之前版本中使用的旧版内存管理模式。传统模式将堆空间严格划分为固定大小的区域，如果未调整应用程序，则可能导致过多的溢出. 除非已启用，否则不会读取以下不推荐使用的内存分数配置： spark.shuffle.memoryFraction、spark.storage.memoryFraction、spark.storage.unrollFraction
+默认值：false
+
+参数：spark.shuffle.memoryFraction
+含义：（不建议使用）仅在启用spark.memory.useLegacyMode读。在 shuffle 期间用于聚合和协同分组的Java堆的分数。在任何给定时间，用于随机播放的所有内存映射的集合大小都受到此限制的限制，超出此限制，内容将开始溢出到磁盘。如果经常发生泄漏，请考虑以spark.storage.memoryFraction为代价增加此值.
+默认值：0.2
+
+参数：spark.storage.memoryFraction
+含义：（不建议使用）仅在启用spark.memory.useLegacyMode读。用于Spark的内存缓存的Java堆的分数。这不应大于JVM中对象的&quot;旧&quot;代，默认情况下，该对象的堆大小为0.6，但是如果您配置自己的旧代大小，则可以增加它。
+默认值：0.6
+
+参数：spark.storage.unrollFraction
+含义：（不建议使用）仅在启用spark.memory.useLegacyMode读。spark.storage.memoryFraction分数，用于展开内存中的块。当没有足够的可用存储空间来完全展开新块时，通过删除现有块来动态分配该块。
+默认值：0.2
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Spark优化]]></title>
         <id>http://javaht.github.io/post/spark_better/</id>
